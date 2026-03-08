@@ -1,0 +1,497 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - SSM Construction</title>
+    <meta name="description"
+        content="View our portfolio of beautiful, independent family homes completed by SSM Construction in Erode, Tamil Nadu.">
+    <meta name="keywords"
+        content="SSM Construction projects, completed homes Erode, duplex house construction Tamil Nadu">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- Filter Buttons --- */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid var(--primary-color);
+            background: transparent;
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* project card hidden state */
+        .project-card {
+            transition: all 0.4s ease;
+        }
+
+        .project-card.hidden {
+            display: none;
+        }
+
+        /* Badge */
+        .project-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.3rem 0.9rem;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            z-index: 2;
+        }
+
+        .badge-completed {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-ongoing {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .project-card {
+            position: relative;
+            cursor: pointer;
+        }
+
+        /* Lightbox */
+        #lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 2rem;
+        }
+
+        #lightbox.open {
+            display: flex;
+        }
+
+        #lightbox img {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 8px;
+            object-fit: contain;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        #lightbox-caption {
+            color: white;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        #lightbox-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            line-height: 1;
+            background: none;
+            border: none;
+        }
+
+        /* Before/After Slider */
+        .ba-container {
+            position: relative;
+            width: 100%;
+            max-width: 750px;
+            margin: 0 auto;
+            user-select: none;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            cursor: ew-resize;
+        }
+
+        .ba-after {
+            display: block;
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .ba-before-wrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .ba-before {
+            width: 750px;
+            max-width: none;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .ba-divider {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background: white;
+            transform: translateX(-50%);
+            cursor: ew-resize;
+        }
+
+        .ba-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+
+        .ba-label {
+            position: absolute;
+            top: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .ba-label-before {
+            left: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .ba-label-after {
+            right: 1rem;
+            background: rgba(15, 118, 110, 0.8);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="index.html" style="display: flex; align-items: center; text-decoration: none;">
+                    <img src="images/logo.png" alt="SSM Construction Logo" class="brand-logo"
+                        style="height: 60px; margin-right: 15px;" loading="lazy">
+                    <div style="display: flex; flex-direction: column;">
+                        <span
+                            style="font-size: 2.5rem; font-weight: 800; color: var(--secondary-color); line-height: 1; margin-bottom: 5px;">SSM</span>
+                        <span
+                            style="font-size: 1.3rem; font-weight: 700; color: var(--primary-color); line-height: 1; letter-spacing: 2px;">CONSTRUCTION</span>
+                    </div>
+                </a>
+            </div>
+
+            <button class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="services.html">Services</a></li>
+                    <li><a href="projects.html" class="active">Projects</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div style="background-color: var(--primary-color); color: white; padding: 4rem 0; text-align: center;">
+        <h1 style="color: white; margin-bottom: 0.5rem;">Our Projects</h1>
+        <p style="color: #e2e8f0; font-size: 1.1rem;">Making Dream Homes a Reality</p>
+    </div>
+
+    <!-- Filterable Projects Gallery -->
+    <section class="section container">
+        <h2>Project Gallery</h2>
+        <p
+            style="text-align: center; max-width: 700px; margin: 0 auto 2rem; color: var(--text-muted); font-size: 1.05rem;">
+            Click any project to view it in full size. Use the filters to browse by type or status.
+        </p>
+
+        <!-- Filter Buttons -->
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterProjects('all', this)">All Projects</button>
+            <button class="filter-btn" onclick="filterProjects('completed', this)">Completed</button>
+            <button class="filter-btn" onclick="filterProjects('ongoing', this)">Ongoing</button>
+            <button class="filter-btn" onclick="filterProjects('duplex', this)">Duplex</button>
+            <button class="filter-btn" onclick="filterProjects('single-floor', this)">Single Floor</button>
+        </div>
+
+        <div class="projects-grid">
+
+            <div class="project-card" data-tags="completed duplex"
+                onclick="openLightbox('images/project-1.png','Beautiful Two-Story Family Home â€“ Veppadai, Erode')">
+                <span class="project-badge badge-completed">Completed</span>
+                <img src="images/project-1.png" alt="Two-Story Independent Home" class="project-img" loading="lazy">
+                <div class="project-info">
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.3rem;">Beautiful Two-Story Family Home</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem;">A fully planned and
+                        executed two-story house with traditional Indian aesthetics and a warm, inviting front porch.
+                        Solid materials used throughout.</p>
+                    <span style="font-size: 0.85rem; color: var(--primary-color); font-weight: 600;"><i
+                            class="fas fa-expand"></i> Click to view full image</span>
+                </div>
+            </div>
+
+            <div class="project-card" data-tags="completed duplex"
+                onclick="openLightbox('images/hero-bg.png','Modern Corner Property â€“ Erode, Tamil Nadu')">
+                <span class="project-badge badge-completed">Completed</span>
+                <img src="images/hero-bg.png" alt="Modern Independent House" class="project-img" loading="lazy">
+                <div class="project-info">
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.3rem;">Reliable Corner Property</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem;">Constructed with
+                        deep foundations and excellent exterior finishing. The elevation is designed to let in plenty of
+                        natural sunlight to all rooms.</p>
+                    <span style="font-size: 0.85rem; color: var(--primary-color); font-weight: 600;"><i
+                            class="fas fa-expand"></i> Click to view full image</span>
+                </div>
+            </div>
+
+            <div class="project-card" data-tags="ongoing single-floor"
+                onclick="openLightbox('images/about-img.png','Active Construction Site â€“ SSM Construction')">
+                <span class="project-badge badge-ongoing">Ongoing</span>
+                <img src="images/about-img.png" alt="On-Going Construction" class="project-img" loading="lazy">
+                <div class="project-info">
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.3rem;">Active Construction Site</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem;">Our dedicated team
+                        of professionals executing structural works with top-tier TMT bars and cement. We follow all
+                        safety and quality regulations.</p>
+                    <span style="font-size: 0.85rem; color: var(--secondary-color); font-weight: 600;"><i
+                            class="fas fa-hard-hat"></i> In Progress</span>
+                </div>
+            </div>
+
+            <div class="project-card" data-tags="completed single-floor"
+                onclick="openLightbox('images/service-elevation.png','Single Floor Modern Elevation â€“ Tamil Nadu')">
+                <span class="project-badge badge-completed">Completed</span>
+                <img src="images/service-elevation.png" alt="Single Floor Home" class="project-img" loading="lazy">
+                <div class="project-info">
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.3rem;">Elegant Single Floor Home</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem;">Beautifully
+                        designed single-floor family home with modern elevation, large balconies, and premium exterior
+                        plastering and paint finishes.</p>
+                    <span style="font-size: 0.85rem; color: var(--primary-color); font-weight: 600;"><i
+                            class="fas fa-expand"></i> Click to view full image</span>
+                </div>
+            </div>
+
+            <div class="project-card" data-tags="completed duplex"
+                onclick="openLightbox('images/service-house.png','Premium Duplex Home â€“ Erode')">
+                <span class="project-badge badge-completed">Completed</span>
+                <img src="images/service-house.png" alt="Premium Duplex" class="project-img" loading="lazy">
+                <div class="project-info">
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.3rem;">Premium Duplex with Garden</h3>
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.75rem;">A spacious duplex
+                        house built for a joint family. Features a garden, covered car parking, and a stunning
+                        double-height living area.</p>
+                    <span style="font-size: 0.85rem; color: var(--primary-color); font-weight: 600;"><i
+                            class="fas fa-expand"></i> Click to view full image</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Before / After Slider -->
+    <section class="section bg-light">
+        <div class="container">
+            <h2>Before &amp; After</h2>
+            <p style="text-align: center; margin-bottom: 2.5rem; color: var(--text-muted);">Drag the slider to see how
+                we transform an empty plot into a beautiful family home.</p>
+
+            <div class="ba-container" id="baContainer">
+                <!-- "After" image is the full background -->
+                <img class="ba-after" src="images/service-house.png" alt="After construction">
+                <!-- "Before" image layered on top left -->
+                <div class="ba-before-wrap" id="baBeforeWrap">
+                    <img class="ba-before" src="images/about-img.png" alt="Before / During construction"
+                        id="baBeforeImg">
+                </div>
+                <div class="ba-divider" id="baDivider">
+                    <div class="ba-handle">
+                        <i class="fas fa-arrows-left-right"></i>
+                    </div>
+                </div>
+                <span class="ba-label ba-label-before">Before</span>
+                <span class="ba-label ba-label-after">After</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project CTA -->
+    <div style="background-color: var(--surface-color); text-align: center; padding: 4rem 1.5rem;">
+        <h3 style="font-size: 1.8rem; margin-bottom: 1rem; color: var(--primary-color);">Want your house featured here
+            next?</h3>
+        <p style="margin-bottom: 2rem; color: var(--text-muted);">Contact us to start planning your perfect family home.
+        </p>
+        <a href="contact.html" class="btn btn-primary">Start The Discussion</a>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <button id="lightbox-close" onclick="closeLightbox()">&#215;</button>
+        <img id="lightbox-img" src="" alt="Project Photo">
+        <p id="lightbox-caption"></p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <a href="index.html"
+                    style="display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                    <img src="images/logo.png" alt="SSM Construction Logo" class="footer-brand-logo"
+                        style="height: 160px; margin-right: 20px;" loading="lazy">
+                    <div style="display: flex; flex-direction: column; text-align: left;">
+                        <span
+                            style="font-size: 3rem; font-weight: 800; color: var(--secondary-color); line-height: 1; margin-bottom: 5px;">SSM</span>
+                        <span
+                            style="font-size: 1.5rem; font-weight: 700; color: white; line-height: 1; letter-spacing: 2px;">CONSTRUCTION</span>
+                    </div>
+                </a>
+            </div>
+            <div class="footer-info">
+                <p><i class="fas fa-map-marker-alt"></i> Veppadai, Erode, Tamil Nadu, India</p>
+                <p><i class="fas fa-phone-alt"></i> <a href="tel:9003696877" style="color: #bdc3c7;">+91 9003696877</a>
+                    | <a href="tel:9788464877" style="color: #bdc3c7;">+91 9788464877</a> | <a href="tel:9789540162"
+                        style="color: #bdc3c7;">+91 9789540162</a></p>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 SSM Construction. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button (pre-filled message) -->
+    <a href="https://wa.me/919003696877?text=Hi%20SSM%20Construction%2C%20I%20visited%20your%20website%20and%20would%20like%20to%20discuss%20building%20a%20home%20for%20my%20family."
+        target="_blank" class="whatsapp-float" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Sticky Quote Bar -->
+    <div id="stickyQuoteBar" style="
+        position: fixed; bottom: 0; left: 0; right: 0;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        color: white; display: flex; align-items: center; justify-content: center; gap: 1.5rem;
+        padding: 0.85rem 1.5rem; z-index: 998; box-shadow: 0 -4px 15px rgba(0,0,0,0.15);
+        transform: translateY(100%); transition: transform 0.5s ease;
+    ">
+        <span style="font-weight: 600; font-size: 1rem;"><i class="fas fa-calculator"></i> Get a Free Estimate on Your
+            Dream Home</span>
+        <a href="contact.html" class="btn btn-primary"
+            style="padding: 0.5rem 1.5rem; font-size: 0.9rem; white-space: nowrap;">Request a Quote</a>
+        <button onclick="document.getElementById('stickyQuoteBar').style.display='none'"
+            style="background:none;border:none;color:white;font-size:1.5rem;cursor:pointer;line-height:1;">&#215;</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // ---- Filter Gallery ----
+        function filterProjects(tag, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.project-card').forEach(card => {
+                const tags = card.dataset.tags ? card.dataset.tags.split(' ') : [];
+                if (tag === 'all' || tags.includes(tag)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // ---- Lightbox ----
+        function openLightbox(src, caption) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox-caption').innerText = caption;
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+        // ---- Before/After Slider ----
+        const container = document.getElementById('baContainer');
+        const beforeWrap = document.getElementById('baBeforeWrap');
+        const beforeImg = document.getElementById('baBeforeImg');
+        let dragging = false;
+
+        function setPosition(x) {
+            const rect = container.getBoundingClientRect();
+            let pct = (x - rect.left) / rect.width * 100;
+            pct = Math.max(0, Math.min(100, pct));
+            beforeWrap.style.width = pct + '%';
+            beforeImg.style.width = container.offsetWidth + 'px';
+            document.getElementById('baDivider').style.left = pct + '%';
+        }
+
+        container.addEventListener('mousedown', e => { dragging = true; setPosition(e.clientX); });
+        window.addEventListener('mouseup', () => { dragging = false; });
+        window.addEventListener('mousemove', e => { if (dragging) setPosition(e.clientX); });
+
+        container.addEventListener('touchstart', e => { dragging = true; setPosition(e.touches[0].clientX); });
+        window.addEventListener('touchend', () => { dragging = false; });
+        window.addEventListener('touchmove', e => { if (dragging) setPosition(e.touches[0].clientX); });
+
+        // ---- Sticky Quote Bar (appears after scroll) ----
+        window.addEventListener('scroll', () => {
+            const bar = document.getElementById('stickyQuoteBar');
+            if (window.scrollY > 300) {
+                bar.style.transform = 'translateY(0)';
+            } else {
+                bar.style.transform = 'translateY(100%)';
+            }
+        });
+    </script>
+</body>
+
+</html>
